@@ -7,7 +7,16 @@ def read_wham(f):
 	df.columns = columns
 	return df
 
-def read_colvar(f):
+def read_colvar(fn):
+	print fn
+	with open(fn) as f:
+		columns = f.readline().split()[2:]
+	df = pd.read_csv(fn, sep=" ", comment="#", header=None)
+	del df[0]
+	df.columns = columns
+	return df
+
+def read_colvar2(f):
 	lines = open(f).readlines()
 	columns = lines[0].split()[2:]
 	data = []
