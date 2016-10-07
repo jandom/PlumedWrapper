@@ -1,6 +1,24 @@
 
 import pandas as pd 
 
+"""#! FIELDS drms ext.bias der_drms
+#! SET min_drms 0.0
+#! SET max_drms 2.0
+#! SET nbins_drms  256
+#! SET periodic_drms false"""
+
+def get_umbrellas(files):
+    return sorted([ float([l for l in  open(f).readlines() if "AT=" in l and "RESTRAINT" in l][-1].split("AT=")[-1].split()[0]) for f in files])
+
+def to_grid(df, output="bias.dat"):
+	name = df.columns[0]
+	with open(output, "w") as f:
+		f.write("#! FIELDS {} ext.bias der_{}\n".format(name, name))
+		f.write("#! SET min_{} {}\n#! SET max_{} {}\n".format(name, df[name].min(), name, df[name].max()))
+		f.write("#! SET nbins_name  {}\n#! SET periodic_{} false\n".format(name, len(df), name))
+		for arg in df.values:
+			f.write("{} {} {}\n".format(*arg))
+
 def read_wham(f):
 	df = pd.read_csv(f, sep="\t", comment="#",header=None)
 	columns = "Coor		Free	FreeErr		Prob		ProbErr".split()
@@ -8,7 +26,7 @@ def read_wham(f):
 	return df
 
 def read_colvar(fn):
-	print fn
+	print(fn)
 	with open(fn) as f:
 		columns = f.readline().split()[2:]
 	df = pd.read_csv(fn, sep=" ", comment="#", header=None)
