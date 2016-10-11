@@ -13,13 +13,8 @@ from setuptools import setup, find_packages
 with open("README.rst") as readme:
     long_description = readme.read()
 
-# Dynamically calculate the version based on gromacs.VERSION.
-# (but requires that we can actually import the package BEFORE it is
-# properly installed!)
-version = __import__('gromacs').get_version()
-
 setup(name="PlumedWrapper",
-      version=version,
+      version="0.1",
       description="A python wrapper around the gromacs tools.",
       long_description=long_description,
       author="Oliver Beckstein",
@@ -42,5 +37,3 @@ setup(name="PlumedWrapper",
       packages=find_packages(),
       zip_safe = True,
 )
-
-
