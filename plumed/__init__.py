@@ -1,6 +1,6 @@
 
-import pandas as pd 
-
+import pandas as pd
+import numpy as np
 """#! FIELDS drms ext.bias der_drms
 #! SET min_drms 0.0
 #! SET max_drms 2.0
@@ -32,6 +32,7 @@ def read_colvar(fn):
 	df = pd.read_csv(fn, sep=" ", comment="#", header=None)
 	del df[0]
 	df.columns = columns
+	df.time = map(np.round, df.time)
 	return df
 
 def read_colvar2(f):
@@ -40,7 +41,7 @@ def read_colvar2(f):
 	data = []
 	for i, l in enumerate(lines):
 		if l.startswith("#"): continue
-		try: 
+		try:
 			row = map(float, l.split())
 			if len(row) != len(columns): continue
 			data.append(row)
@@ -63,6 +64,23 @@ def read_fes(f="fes.dat"):
 	data = [map(float, l.split()) for l in lines if not l.startswith("#")]
 	df = pd.DataFrame(data, columns=columns)
 	return df
+
+def read_plumeds(filenames):
+    import natsort
+    return [ read_plumed(f) for f in natsort.natsorted(filenames)]
+
+def read_plumed(f):
+    def foo(token): return float(token.split("=")[-1])
+    line = [l for l in open(f).readlines() if "RESTRAINT" in l][-1]
+    tokens = line.split()
+
+    center = [token for token in tokens if token.startswith("AT")][-1]
+    weight = [token for token in tokens if token.startswith("KAPPA")][-1]
+
+    center, weight = foo(center), foo(weight)
+
+    ind = int(f.split(".")[-2])
+    return ind, center, weight
 
 def read_str(filename):
 
@@ -134,5 +152,5 @@ def read_str(filename):
 
     lines = [l.split() for l in open(filename).readlines() if len(l.split()) == 64]
     df = pd.DataFrame(lines, columns=columns)
-	
+
     return df.convert_objects(convert_numeric=True)
