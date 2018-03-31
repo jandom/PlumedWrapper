@@ -2,6 +2,8 @@
 import pandas as pd
 import numpy as np
 
+from plumed.io.parsers import read_colvar, read_wham
+
 """#! FIELDS drms ext.bias der_drms
 #! SET min_drms 0.0
 #! SET max_drms 2.0
@@ -19,24 +21,6 @@ def to_grid(df, output="bias.dat"):
 		f.write("#! SET nbins_name  {}\n#! SET periodic_{} false\n".format(name, len(df), name))
 		for arg in df.values:
 			f.write("{} {} {}\n".format(*arg))
-
-def read_wham(f):
-	df = pd.read_csv(f, sep="\t", comment="#", header=None)
-	columns = "Coor		Free	FreeErr		Prob		ProbErr".split()
-	df.columns = columns
-	return df
-
-def read_colvar(fn, verbose=False):
-	if verbose: print(fn)
-	with open(fn) as f:
-		line = f.readline()
-		assert line[:2] == '#!', 'Missing or incorrect header'
-		columns = line.split()[2:]
-	df = pd.read_csv(fn, sep=" ", comment="#", header=None)
-	del df[0]
-	df.columns = columns
-	df.time = map(np.round, df.time)
-	return df
 
 def read_hills(f="HILLS"):
 	lines = open(f).readlines()
