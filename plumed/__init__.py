@@ -29,7 +29,9 @@ def read_wham(f):
 def read_colvar(fn, verbose=False):
 	if verbose: print(fn)
 	with open(fn) as f:
-		columns = f.readline().split()[2:]
+		line = f.readline()
+		assert line[:2] == '#!', 'Missing or incorrect header'
+		columns = line.split()[2:]
 	df = pd.read_csv(fn, sep=" ", comment="#", header=None)
 	del df[0]
 	df.columns = columns

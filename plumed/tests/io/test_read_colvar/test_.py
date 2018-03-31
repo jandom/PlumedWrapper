@@ -12,6 +12,8 @@ from plumed import read_colvar
 DATA_PATH = tm.get_data_path()
 
 class TestReadColvar(object):
+    colvar_missing_header_data = os.path.join(DATA_PATH, 'COLVAR_MISSING-HEADER')
+    colvar_header_value_mismatch_data = os.path.join(DATA_PATH, 'COLVAR_HEADER-VALUE-MISMATCH')
     colvar_short_data = os.path.join(DATA_PATH, 'COLVAR_SHORT')
 
     def test_file_does_not_exits(self):
@@ -19,10 +21,21 @@ class TestReadColvar(object):
             df = read_colvar('file_does_not_exist')
         assert str(excinfo.value) == "[Errno 2] No such file or directory: 'file_does_not_exist'"
 
+    def test_column_missing(self):
+        with pytest.raises(Exception) as excinfo:
+            df = read_colvar(self.colvar_missing_header_data)
+        assert str(excinfo.value) == 'Missing or incorrect header'
+
     def test_column_names(self):
         df = read_colvar(self.colvar_short_data)
-        desired_columns = ["time","v.x","v.y","v.z","d.x","d.y","d.z","d2","dist","distances.min","restraint.bias","restraint.force2"]
+        desired_columns = ["time", "v.x", "v.y", "v.z", "d.x", "d.y", "d.z", "d2", \
+            "dist", "distances.min", "restraint.bias", "restraint.force2"]
         assert_array_equal(df.columns.values, desired_columns)
+
+    def test_column_value_mismatch(self):
+        with pytest.raises(Exception) as excinfo:
+            df = read_colvar(self.colvar_header_value_mismatch_data)
+        assert str(excinfo.value) == 'Length mismatch: Expected axis has 12 elements, new values have 10 elements'
 
     def test_values(self):
         df = read_colvar(self.colvar_short_data)
