@@ -2,25 +2,9 @@
 import pandas as pd
 import numpy as np
 
-from plumed.io.parsers import read_colvar, read_wham
-
-"""#! FIELDS drms ext.bias der_drms
-#! SET min_drms 0.0
-#! SET max_drms 2.0
-#! SET nbins_drms  256
-#! SET periodic_drms false"""
-
-def get_umbrellas(files):
-    return sorted([ float([l for l in  open(f).readlines() if "AT=" in l and "RESTRAINT" in l][-1].split("AT=")[-1].split()[0]) for f in files])
-
-def to_grid(df, output="bias.dat"):
-	name = df.columns[0]
-	with open(output, "w") as f:
-		f.write("#! FIELDS {} ext.bias der_{}\n".format(name, name))
-		f.write("#! SET min_{} {}\n#! SET max_{} {}\n".format(name, df[name].min(), name, df[name].max()))
-		f.write("#! SET nbins_name  {}\n#! SET periodic_{} false\n".format(name, len(df), name))
-		for arg in df.values:
-			f.write("{} {} {}\n".format(*arg))
+from plumed.io.parsers import \
+    read_colvar, \
+    read_wham
 
 def read_hills(f="HILLS"):
 	lines = open(f).readlines()
@@ -35,10 +19,6 @@ def read_fes(f="fes.dat"):
 	data = [map(float, l.split()) for l in lines if not l.startswith("#")]
 	df = pd.DataFrame(data, columns=columns)
 	return df
-
-def read_plumeds(filenames):
-    import natsort
-    return [ read_plumed(f) for f in natsort.natsorted(filenames)]
 
 def read_plumed(f):
     def foo(token): return float(token.split("=")[-1])
@@ -119,7 +99,6 @@ def read_str(filename):
  '_Gen_dist_constraint.Auth_atom_name_2',
  '_Gen_dist_constraint.Entry_ID',
  '_Gen_dist_constraint.Gen_dist_constraint_list_ID']
-
 
     lines = [l.split() for l in open(filename).readlines() if len(l.split()) == 64]
     df = pd.DataFrame(lines, columns=columns)
