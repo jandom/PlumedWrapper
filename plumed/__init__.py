@@ -1,6 +1,7 @@
 
 import pandas as pd
 import numpy as np
+
 """#! FIELDS drms ext.bias der_drms
 #! SET min_drms 0.0
 #! SET max_drms 2.0
@@ -25,30 +26,14 @@ def read_wham(f):
 	df.columns = columns
 	return df
 
-def read_colvar(fn):
-	print(fn)
+def read_colvar(fn, verbose=False):
+	if verbose: print(fn)
 	with open(fn) as f:
 		columns = f.readline().split()[2:]
 	df = pd.read_csv(fn, sep=" ", comment="#", header=None)
 	del df[0]
 	df.columns = columns
 	df.time = map(np.round, df.time)
-	return df
-
-def read_colvar2(f):
-	lines = open(f).readlines()
-	columns = lines[0].split()[2:]
-	data = []
-	for i, l in enumerate(lines):
-		if l.startswith("#"): continue
-		try:
-			row = map(float, l.split())
-			if len(row) != len(columns): continue
-			data.append(row)
-		except ValueError:
-			print i, l
-	#data = [map(float, l.split()) for i, l in enumerate(lines) if not l.startswith("#")]
-	df = pd.DataFrame(data , columns=columns)
 	return df
 
 def read_hills(f="HILLS"):
