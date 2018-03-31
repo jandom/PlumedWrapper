@@ -32,6 +32,10 @@ setup(name="PlumedWrapper",
                    'Topic :: Scientific/Engineering :: Chemistry',
                    'Topic :: Software Development :: Libraries :: Python Modules',
                   ],
-      packages=find_packages(),
+      packages=['plumed'],
+      package_dir={'plumed': 'plumed/'},
+      package_data={
+          'plumed.tests.io': ['data/COLVAR']
+      },
       zip_safe=True,
      )
