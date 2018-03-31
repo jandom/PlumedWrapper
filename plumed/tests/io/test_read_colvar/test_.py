@@ -3,11 +3,8 @@ import os
 import pytest
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
-
 import plumed.util.testing as tm
 from plumed import read_colvar
-
-
 
 DATA_PATH = tm.get_data_path()
 
