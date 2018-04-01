@@ -16,6 +16,8 @@ python setup.py
 
 ## Usage
 
+### Reading a collective variable file COLVAR
+
 Assume you have the following COLVAR file
 
 ```bash
@@ -55,3 +57,11 @@ Out[3]:
 3  10.531320  3.245199       0.483370        3.475311       6950.622491  
 4  11.165386  3.341465       0.482442        3.398304       6796.608996  
 ```
+
+### Reading a WHAM free energy profile
+
+### Reading WHAM window energies
+
+## Examples
+
+### Compute per-frame free-energy
