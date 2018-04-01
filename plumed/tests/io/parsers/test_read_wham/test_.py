@@ -1,22 +1,17 @@
 
 import os
+import io
 import pytest
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 import plumed.util.testing as tm
 from plumed import read_wham
 
-import sys
-if sys.version_info[0] < 3:
-    from StringIO import StringIO
-else:
-    from io import StringIO
-
 DATA_PATH = tm.get_data_path()
 
-class TestReadWham(object):
+class TestReadFES(object):
     wham_data = os.path.join(DATA_PATH, 'wham_result.dat')
-    wham_invalid_data = StringIO("""#Coor		Free	+/-		Prob		+/-
+    wham_invalid_data = io.BytesIO("""#Coor		Free	+/-		Prob		+/-
     0.427930	inf	-nan
     0.432227	17.503672
         """)
