@@ -4,21 +4,9 @@ import numpy as np
 
 from plumed.io.parsers import \
     read_colvar, \
-    read_wham
-
-def read_hills(f="HILLS"):
-	lines = open(f).readlines()
-	columns = lines[0].split()[2:]
-	data = [map(float, l.split()) for l in lines if not l.startswith("#")]
-	df = pd.DataFrame(data, columns=columns)
-	return df
-
-def read_fes(f="fes.dat"):
-	lines = open(f).readlines()
-	columns = lines[0].split()[2:]
-	data = [map(float, l.split()) for l in lines if not l.startswith("#")]
-	df = pd.DataFrame(data, columns=columns)
-	return df
+    read_wham, \
+    read_hills, \
+    read_fes
 
 def read_plumed(f):
     def foo(token): return float(token.split("=")[-1])
