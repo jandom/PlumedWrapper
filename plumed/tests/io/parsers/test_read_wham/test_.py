@@ -15,7 +15,7 @@ else:
 DATA_PATH = tm.get_data_path()
 
 class TestReadWham(object):
-    wham_data = os.path.join(DATA_PATH, 'result.dat')
+    wham_data = os.path.join(DATA_PATH, 'wham_result.dat')
     wham_invalid_data = StringIO("""#Coor		Free	+/-		Prob		+/-
     0.427930	inf	-nan
     0.432227	17.503672
