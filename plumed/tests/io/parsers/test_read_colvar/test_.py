@@ -11,9 +11,7 @@ import io
 DATA_PATH = tm.get_data_path()
 
 class TestReadColvar(object):
-    colvar_missing_header_data = os.path.join(DATA_PATH, 'COLVAR_MISSING-HEADER')
-    colvar_header_value_mismatch_data = os.path.join(DATA_PATH, 'COLVAR_HEADER-VALUE-MISMATCH')
-    colvar_short_data = os.path.join(DATA_PATH, 'COLVAR_SHORT')
+    colvar_short_data = os.path.join(DATA_PATH, 'COLVAR')
 
     def test_file_does_not_exits(self):
         with pytest.raises(Exception) as excinfo:
@@ -21,11 +19,11 @@ class TestReadColvar(object):
         assert str(excinfo.value) == "[Errno 2] No such file or directory: 'file_does_not_exist'"
 
     def test_column_missing(self):
-        missing_header_data = io.BytesIO(b""" 0.000000 -1.640806 -0.290569 -1.760758 -3.798299 2.503861 -3.303975 10.916252 3.303975 0.473081 2.670422 5340.844815
+        file_contents = io.BytesIO(b""" 0.000000 -1.640806 -0.290569 -1.760758 -3.798299 2.503861 -3.303975 10.916252 3.303975 0.473081 2.670422 5340.844815
          29.999999 -1.629709 -0.424727 -1.784937 2.824048 -2.400719 -3.358084 11.276729 3.358084 0.501038 5.104302 10208.604324
-            """)
+         """)
         with pytest.raises(Exception) as excinfo:
-            df = read_colvar(missing_header_data)
+            df = read_colvar(file_contents)
         assert str(excinfo.value) == 'Missing or incorrect header'
 
     def test_column_names(self):
@@ -35,8 +33,13 @@ class TestReadColvar(object):
         assert_array_equal(df.columns.values, desired_columns)
 
     def test_column_value_mismatch(self):
+        file_contents = io.BytesIO(b"""#! FIELDS time v.x v.y v.z d.x d.y d.z d2 dist distances.min
+         0.000000 -1.640806 -0.290569 -1.760758 -3.798299 2.503861 -3.303975 10.916252 3.303975 0.473081 2.670422 5340.844815
+         29.999999 -1.629709 -0.424727 -1.784937 2.824048 -2.400719 -3.358084 11.276729 3.358084 0.501038 5.104302 10208.604324
+         """)
+
         with pytest.raises(Exception) as excinfo:
-            df = read_colvar(self.colvar_header_value_mismatch_data)
+            df = read_colvar(file_contents)
         assert str(excinfo.value) == 'Length mismatch: Expected axis has 12 elements, new values have 10 elements'
 
     def test_values(self):
