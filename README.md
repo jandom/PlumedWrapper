@@ -4,6 +4,8 @@
 Aside from GROMACS trajectories, there are the text-based Plumed2 trajectories.
 This library allows these files to be read-in as pandas DataFrame objects, making manipulation easier.
 
+[![Build Status](https://travis-ci.org/jandom/PlumedWrapper.svg?branch=master)](https://travis-ci.org/jandom/PlumedWrapper)
+
 ## Installation
 
 Clone the repo and install using
