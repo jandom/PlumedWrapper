@@ -14,6 +14,74 @@ cd PlumedWrapper
 python setup.py
 ```
 
+## Examples
+
+Below is a single most useful example for analyzing Umbrella Sampling (US) simulations.
+
+### Compute per-frame free-energy
+
+Using a WHAM free energy profile estimated from an Umbrella Sampling simulation, we can calculate the free-energy per-frame. This free energy per-frame is simply a sum of:
+
+- the free energy of the window,
+- bias energy, as recorded for the frame.
+
+The typical setup is a 10-replica simulation: 10 windows generate 10 trajectories.
+
+```python
+In [1]: import plumed
+
+In [2]: import glob
+
+In [2]: import pandas as pd
+
+In [2]: import numpy as np
+
+In [3]: sorted(glob.glob("COLVAR.?"))
+Out[3]:
+['COLVAR.0',
+ 'COLVAR.1',
+ 'COLVAR.2',
+ 'COLVAR.3',
+ 'COLVAR.4',
+ 'COLVAR.5',
+ 'COLVAR.6',
+ 'COLVAR.7',
+ 'COLVAR.8',
+ 'COLVAR.9']
+
+In [4]: file = sorted(glob.glob("COLVAR.?"))
+
+In [5]: data = [(f, plumed.read_colvar(f)) for f in files]
+
+In [6]: windows = plumed.read_fes("result_128_0.001_5.dat")
+
+In [7]: windows
+Out[7]:
+    Window        Free       +/-
+0        0    0.000000  0.000000
+1        1   -2.962629  0.009029
+2        2   -0.819930  0.016131
+3        3    6.424908  0.020912
+4        4   18.764319  0.023116
+5        5   36.184953  0.023431
+6        6   58.665439  0.024853
+7        7   86.073163  0.032630
+8        8  108.772854  0.067440
+9        9  118.034358  0.115036
+
+In [8]: for f, df in data:
+  df["window.bias"] = windows["Free"].values[int(f.split("COLVAR.")[-1])]
+
+In [9]: df = pd.concat(zip(*data)[1])
+
+In [10]: beta = 1/(2.479 * 310./300.)
+
+In [11]: df["weights"] = np.exp(-beta*(df["window.bias"] - df["restraint.bias"]))
+
+```
+
+See this paper, eq. 2 https://www.sciencedirect.com/science/article/pii/S0010465500002150
+
 ## Usage
 
 ### Reading a collective variable file COLVAR
@@ -143,7 +211,3 @@ Out[3]:
 14      14  120.466334  0.189525
 15      15  122.303841  0.206086
 ```
-
-## Examples
-
-### Compute per-frame free-energy
