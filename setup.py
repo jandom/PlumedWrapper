@@ -11,6 +11,20 @@ from setuptools import setup, find_packages
 with open("README.md") as readme:
     long_description = readme.read()
 
+
+min_numpy_ver = '1.9.0'
+setuptools_kwargs = {
+    'install_requires': [
+        'python-dateutil >= 2.5.0',
+        'pytz >= 2011k',
+        'numpy >= {numpy_ver}'.format(numpy_ver=min_numpy_ver),
+        'pandas >= 0.22.0',
+    ],
+    'setup_requires': ['numpy >= {numpy_ver}'.format(numpy_ver=min_numpy_ver)],
+    'zip_safe': False,
+}
+
+
 setup(name="PlumedWrapper",
       version="0.1",
       description="A python wrapper around the gromacs tools.",
@@ -18,7 +32,7 @@ setup(name="PlumedWrapper",
       author="Jan Domanski",
       author_email="jandom@gmail.com",
       license="GPLv3",
-      url="://github.com/orbeckst/PlumedWrapper",
+      url="://github.com/jandom/PlumedWrapper",
       download_url="https://github.com/jandom/PlumedWrapper/downloads",
       keywords="science Gromacs Plumed analysis 'molecular dynamics'",
       classifiers=['Development Status :: 4 - Beta',
@@ -37,5 +51,5 @@ setup(name="PlumedWrapper",
       package_data={
           'plumed.tests.io': ['data/COLVAR']
       },
-      zip_safe=True,
+      **setuptools_kwargs
      )
