@@ -1,3 +1,6 @@
+TODOS
+- adding the TPS code here
+
 # PlumedWrapper
 
 ... or simply pyPlumed. I work with GROMACS and Plumed2 simulations a lot.
