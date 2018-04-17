@@ -13,3 +13,8 @@ def read_commitorrs(trajectories, basinA, basinB):
 def read_trajectories(files):
     # Read the trajectory data, each trajectory as a pd.DataFrame
     return {f: pd.read_fwf(f, names=["time", "x"]) for f in files}
+
+def concatenate_trajectories(tf, tb):
+    tb.loc[:,'time'] *= -1
+    df = pd.concat([tf, tb])
+    return df.sort_values('time')

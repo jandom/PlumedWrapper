@@ -1,3 +1,4 @@
+import pandas as pd
 
 def get_crossings(df, barrier, column='x'):
     df = get_velocities(df, barrier, column)
@@ -10,7 +11,7 @@ def get_velocities(df, barrier, column='x'):
     """
     Get a dataframe with a TPS trajectory (backward or forward), and a barrier (float) along a column (default: drms), and get crossing times
     """
-    
+
     df = df[['time', column]]
     df = df[df.time != 0.0]
 
